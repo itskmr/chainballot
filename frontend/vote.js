@@ -36,12 +36,12 @@ function getQueryParam(param) {
 }
 
 function getReadOnlyWeb3() {
-    // Always return a web3 instance using public RPC for read-only
-    return new Web3('https://polygon-rpc.com');
+    // Always return a web3 instance using GAI network RPC for read-only
+    return new Web3('https://0x4e4542a6.rpc.aurora-cloud.dev');
 }
 
 async function init() {
-    // Use MetaMask provider if available, otherwise fallback to public Polygon RPC
+    // Use MetaMask provider if available, otherwise fallback to GAI network RPC
     if (window.ethereum) {
         web3 = new Web3(window.ethereum);
     } else {
@@ -85,7 +85,7 @@ async function renderVotingDetails(identifier) {
     // Always use read-only web3 for details
     const readWeb3 = getReadOnlyWeb3();
     const votingRead = new readWeb3.eth.Contract(VotingABI, VotingAddress);
-    const nftRead = new readWeb3.eth.Contract(NFTFactoryABI, NFTFactoryAddress);
+    const nftRead = new readWeb3.eth.Contract(VotingPowerNFTABI, VotingPowerNFTAddress);
     try {
         let title = '', description = '', nftContract = '', start = '', end = '', creatorAddr = '';
         const details = await votingRead.methods.getVotingDetails(identifier).call();
@@ -98,13 +98,12 @@ async function renderVotingDetails(identifier) {
         }
         start = await votingRead.methods.getStartDate(identifier).call();
         end = await votingRead.methods.getEndDate(identifier).call();
-        creatorAddr = await nftRead.methods.identifierToOwner(identifier).call();
+        // Creator information not available in current contract design
         const startTime = start ? new Date(Number(start) * 1000).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '';
         const endTime = end ? new Date(Number(end) * 1000).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '';
         document.getElementById('voting-details').innerHTML = `
             <p><b>Title:</b> ${title}</p>
             <p><b>Identifier:</b> ${identifier}</p>
-            <p><b>Creator:</b> <span class="contract-address">${creatorAddr}</span></p>
             <p><b>Description:</b> ${description}</p>
             <p><b>NFT Contract:</b> <span class="contract-address">${nftContract}</span></p>
             <p><b>Start Time:</b> ${startTime} (IST)</p>
@@ -119,7 +118,7 @@ async function renderCandidatesVoting(identifier, hasWallet) {
     // Always use read-only web3 for candidate data
     const readWeb3 = getReadOnlyWeb3();
     const votingRead = new readWeb3.eth.Contract(VotingABI, VotingAddress);
-    const nftRead = new readWeb3.eth.Contract(NFTFactoryABI, NFTFactoryAddress);
+    const nftRead = new readWeb3.eth.Contract(VotingPowerNFTABI, VotingPowerNFTAddress);
     const candidatesList = document.getElementById('candidates-list');
     const voteActions = document.getElementById('vote-actions');
     const voteStatus = document.getElementById('vote-status');
@@ -285,11 +284,11 @@ async function renderCandidatesVoting(identifier, hasWallet) {
 async function renderNFTOwners(identifier) {
     // Always use read-only web3 for NFT owners
     const readWeb3 = getReadOnlyWeb3();
-    const nftRead = new readWeb3.eth.Contract(NFTFactoryABI, NFTFactoryAddress);
+    const nftRead = new readWeb3.eth.Contract(VotingPowerNFTABI, VotingPowerNFTAddress);
     const votingRead = new readWeb3.eth.Contract(VotingABI, VotingAddress);
     let owners = [];
     try {
-        owners = await nftRead.methods.getUsersWithNFTs(identifier).call();
+        owners = await nftRead.methods.getUsersWithNFTs().call();
     } catch (e) { owners = []; }
     const ownersList = document.getElementById('nft-owners-list');
     ownersList.innerHTML = '';

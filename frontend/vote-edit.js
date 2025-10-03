@@ -16,12 +16,12 @@ const VotingABI = [
     {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}, {"internalType": "string", "name": "candidate", "type": "string"}], "name": "addCandidate", "outputs": [], "stateMutability": "nonpayable", "type": "function"},
     {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}], "name": "deleteVoting", "outputs": [], "stateMutability": "nonpayable", "type": "function"}
 ];
-const NFTFactoryABI = [
-    {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}], "name": "getUsersWithNFTs", "outputs": [{"internalType": "address[]", "name": "", "type": "address[]"}], "stateMutability": "view", "type": "function"},
-    {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}], "name": "fetchData", "outputs": [{"internalType": "address[]", "name": "", "type": "address[]"}], "stateMutability": "view", "type": "function"},
-    {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}, {"internalType": "address", "name": "recipient", "type": "address"}], "name": "mintNFT", "outputs": [], "stateMutability": "nonpayable", "type": "function"},
-    {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}, {"internalType": "address[]", "name": "recipients", "type": "address[]"}], "name": "batchMintNFTs", "outputs": [], "stateMutability": "nonpayable", "type": "function"},
-    {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}], "name": "identifierToOwner", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"}
+// VotingPowerNFT ABI for checking NFT ownership
+const VotingPowerNFTABI = [
+    {"inputs": [], "name": "getUsersWithNFTs", "outputs": [{"internalType": "address[]", "name": "", "type": "address[]"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [{"internalType": "address", "name": "addr", "type": "address"}], "name": "hasReceived", "outputs": [{"internalType": "bool", "name": "", "type": "bool"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [{"internalType": "uint256", "name": "tokenId", "type": "uint256"}], "name": "ownerOf", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [{"internalType": "address", "name": "owner", "type": "address"}], "name": "balanceOf", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}
 ];
 const VotingAddress = "0x9a836494aCB32fb1721eCbe976C13291dd91597f"; // ChainBallot contract
 const VotingPowerNFTAddress = "0xb22d24BE5d608e5BD33d2b5D936A80b74d445CCd"; // VotingPowerNFT contract
@@ -34,9 +34,9 @@ function getQueryParam(param) {
 }
 
 async function init() {
-    web3 = new Web3(window.ethereum || new Web3.providers.HttpProvider('https://polygon-rpc.com'));
+    web3 = new Web3(window.ethereum || new Web3.providers.HttpProvider('https://0x4e4542a6.rpc.aurora-cloud.dev'));
     votingContract = new web3.eth.Contract(VotingABI, VotingAddress);
-    votingPowerNFTContract = new web3.eth.Contract(NFTFactoryABI, VotingPowerNFTAddress);
+    votingPowerNFTContract = new web3.eth.Contract(VotingPowerNFTABI, VotingPowerNFTAddress);
 
     let identifier = getQueryParam('id');
     if (!identifier) {

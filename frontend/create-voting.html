@@ -140,7 +140,8 @@
                 document.getElementById('nft-contract-address').value = nftContractAddress;
             } else {
                 // Use deployed contract addresses (direct deployment flow)
-                document.getElementById('identifier').value = 'main-voting'; // Default identifier
+                const timestamp = Date.now();
+                document.getElementById('identifier').value = `voting-${timestamp}`; // Unique identifier
                 document.getElementById('nft-contract-address').value = deployedNftAddress;
             }
         });

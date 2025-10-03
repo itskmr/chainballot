@@ -534,10 +534,10 @@ async function mintNFT(recipientAddress) {
     try {
         // Get current gas price from the network
         const gasPrice = await web3.eth.getGasPrice();
-
+        
         const result = await votingPowerNFTContract.methods
             .mintNFT(recipientAddress)
-            .send({
+            .send({ 
                 from: accounts[0],
                 gas: 200000, // Set appropriate gas limit for minting
                 gasPrice: gasPrice // Use current market gas price

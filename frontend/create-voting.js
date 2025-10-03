@@ -259,6 +259,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const gasPrice = await web3.eth.getGasPrice();
 
                 // Call createVoting function
+                console.log('Creating voting with params:', {
+                    identifier,
+                    title,
+                    description,
+                    startTime,
+                    endTime,
+                    nftContractAddress,
+                    candidates: candidates.length
+                });
+
                 const result = await chainBallotContract.methods
                     .createVoting(
                         identifier,
@@ -269,9 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         nftContractAddress,
                         candidates
                     )
-                    .send({ 
+                    .send({
                         from: accounts[0],
-                        gas: 5000000, // 5 million gas limit
+                        gas: 2000000, // Further increased gas limit for voting creation
                         gasPrice: gasPrice // Use current market gas price
                     });
 
