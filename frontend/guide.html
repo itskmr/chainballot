@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChainBallot - Startup Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2563eb;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+        .step {
+            background: #f8fafc;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+        }
+        .command {
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .button {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 10px 0;
+        }
+        .button:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 ChainBallot Startup Guide</h1>
+
+        <div class="success">
+            <strong>✅ Good news!</strong> I've fixed the dependency issues, MetaMask integration, and removed all hardcoded URLs. Follow this guide step-by-step.
+        </div>
+
+        <h2>📋 Prerequisites Check</h2>
+        <div class="step">
+            <h3>1. Install Dependencies</h3>
+            <div class="command">cd ~/challenge-simple-nft-example/ChainBallot</div>
+            <div class="command">yarn install</div>
+            <p><em>This should now complete successfully (no more endless loop!)</em></p>
+        </div>
+
+        <h2>🔧 MetaMask Setup</h2>
+        <div class="step">
+            <h3>2. Configure GAI Network in MetaMask</h3>
+            <p><strong>Open MetaMask → Add Network:</strong></p>
+            <ul>
+                <li><strong>Network Name:</strong> Gyansetu AI</li>
+                <li><strong>RPC URL:</strong> https://0x4e4542a6.rpc.aurora-cloud.dev</li>
+                <li><strong>Chain ID:</strong> 1313161894</li>
+                <li><strong>Currency Symbol:</strong> GAI</li>
+                <li><strong>Block Explorer:</strong> https://0x4e4542a6.explorer.aurora-cloud.dev</li>
+            </ul>
+        </div>
+
+        <h2>⚙️ Environment Setup</h2>
+        <div class="step">
+            <h3>3. Configure Environment File</h3>
+            <div class="command">nano .env</div>
+            <p>Add your private key (without 0x prefix):</p>
+            <div class="command">PRIVATE_KEY=your_private_key_here</div>
+            <p><em>Save and exit (Ctrl+X, Y, Enter)</em></p>
+        </div>
+
+        <h2>🚀 Deploy Smart Contracts</h2>
+        <div class="step">
+            <h3>4. Compile & Deploy</h3>
+            <div class="command">yarn compile</div>
+            <div class="command">yarn deploy</div>
+            <p><strong>Copy the contract addresses from the output:</strong></p>
+            <ul>
+                <li>VotingPowerNFT: 0x...</li>
+                <li>ChainBallot: 0x...</li>
+            </ul>
+        </div>
+
+        <h2>🔗 Update Contract Addresses</h2>
+        <div class="step">
+            <h3>5. Update Frontend</h3>
+            <div class="command">node scripts/update-addresses.js 0x_YOUR_NFT_ADDRESS 0x_YOUR_VOTING_ADDRESS</div>
+        </div>
+
+        <h2>🌐 Run the Application</h2>
+        <div class="step">
+            <h3>6. Start Web Server</h3>
+            <div class="command">yarn start</div>
+            <p><strong>Open in browser:</strong> <a href="http://localhost:3000/home.html">http://localhost:3000/home.html</a></p>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ If you see "Contracts not deployed":</strong>
+            <ol>
+                <li>Make sure you've run <code>yarn deploy</code></li>
+                <li>Update addresses with <code>node scripts/update-addresses.js</code></li>
+                <li>Refresh the page</li>
+            </ol>
+        </div>
+
+        <div class="success">
+            <strong>🎉 Ready to use!</strong> Click "Connect Wallet" and it will automatically switch to GAI Network.
+        </div>
+
+        <h2>🚨 Troubleshooting</h2>
+        <div class="warning">
+            <strong>⚠️ If you see "Returned values aren't valid, did it run Out of Gas?":</strong>
+            <ol>
+                <li>Ensure contracts are deployed: <code>yarn deploy</code></li>
+                <li>Update addresses: <code>node scripts/update-addresses.js &lt;NFT&gt; &lt;VOTING&gt;</code></li>
+                <li>Check MetaMask is on GAI Network</li>
+                <li>Clear browser cache and refresh</li>
+            </ol>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ If ChainBallot logo redirects to Vercel:</strong> Fixed! Logo now stays on localhost.
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ If MetaMask shows Ethereum instead of GAI:</strong> Click "Connect Wallet" - it will auto-switch, or manually select "Gyansetu AI" network.
+        </div>
+
+        <h2>🛠️ Available Commands</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+                <h3>Development:</h3>
+                <div class="command">yarn compile</div>
+                <div class="command">yarn deploy</div>
+                <div class="command">yarn test</div>
+            </div>
+            <div>
+                <h3>Application:</h3>
+                <div class="command">yarn start</div>
+                <div class="command">yarn serve</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="home.html" class="button">🚀 Launch ChainBallot</a>
+            <a href="TROUBLESHOOTING.md" class="button" style="background: #dc2626;">🔧 Troubleshooting</a>
+            <a href="README.md" class="button" style="background: #059669;">📖 Full Documentation</a>
+        </div>
+    </div>
+</body>
+</html>

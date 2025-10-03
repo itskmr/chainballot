@@ -1,0 +1,16 @@
+{
+  "network": "GAI Network",
+  "chainId": 1313161894,
+  "contracts": {
+    "VotingPowerNFT": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "deployed": false
+    },
+    "ChainBallot": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "deployed": false
+    }
+  },
+  "lastDeployment": null,
+  "note": "Update contract addresses after deployment using: npx hardhat run scripts/deploy.js --network gai"
+}

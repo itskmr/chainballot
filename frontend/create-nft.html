@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Voting NFT</title>
+    <link rel="stylesheet" href="main.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <script src="create-nft.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>
+                <a href="home.html" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-link"></i>
+                    Chain-Ballot
+                </a>
+            </h1>
+            <button id="connect-wallet" class="btn-header">Connect Wallet</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="welcome-section">
+                <h2>Mint Your Voting NFT</h2>
+                <p>Mint a voting power NFT to participate in governance</p>
+                
+                <form id="nft-form" class="form">
+                    <div class="form-group">
+                        <label for="recipient">Recipient Address:</label>
+                        <input type="text" id="recipient" name="recipient" placeholder="0x..." required>
+                    </div>
+
+                    <button type="submit" class="btn">Mint Voting NFT</button>
+                </form>
+                
+                <div id="result-section" class="hidden">
+                    <h3>Transaction Result</h3>
+                    <p id="transaction-status"></p>
+                    <p>NFT Contract Address: <span id="contract-address"></span></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize web3 and contract
+        async function init() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    web3 = new Web3(window.ethereum);
+                    
+                    // Check if already connected
+                    accounts = await web3.eth.getAccounts();
+                    if (accounts.length > 0) {
+                        handleWalletConnected(accounts[0]);
+                    }
+
+                    // Initialize contract
+                    const contractInitialized = await initContract();
+                    if (!contractInitialized) {
+                        throw new Error('Failed to initialize contract');
+                    }
+                } catch (error) {
+                    console.error('Error initializing:', error);
+                    alert('Error initializing: ' + error.message);
+                }
+            } else {
+                alert('Please install MetaMask to use this application');
+            }
+        }
+
+        // Connect wallet button handler
+        document.getElementById('connect-wallet').addEventListener('click', async () => {
+            try {
+                accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                handleWalletConnected(accounts[0]);
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+                alert('Error connecting wallet: ' + error.message);
+            }
+        });
+
+        // Handle wallet connection
+        function handleWalletConnected(account) {
+            const connectButton = document.getElementById('connect-wallet');
+            connectButton.textContent = account.slice(0, 6) + '...' + account.slice(-4);
+            connectButton.style.backgroundColor = '#27ae60';
+        }
+
+        // Form submission handler
+        document.getElementById('nft-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!accounts || accounts.length === 0) {
+                alert('Please connect your wallet first');
+                return;
+            }
+
+            const recipient = document.getElementById('recipient').value;
+
+                const resultSection = document.getElementById('result-section');
+                const statusElement = document.getElementById('transaction-status');
+                const addressElement = document.getElementById('contract-address');
+
+            try {
+                // Show loading state
+                resultSection.classList.remove('hidden');
+                statusElement.textContent = 'Processing transaction...';
+                statusElement.style.color = '#3498db';
+
+                const result = await mintNFT(recipient);
+
+                statusElement.textContent = 'NFT Minted Successfully!';
+                statusElement.style.color = '#27ae60';
+
+                // The contract address is already known (VotingPowerNFT)
+                addressElement.textContent = VotingPowerNFTAddress;
+
+                // Store the NFT contract address in localStorage
+                localStorage.setItem('nftContractAddress', VotingPowerNFTAddress);
+
+                // Add Create Voting button
+                const createVotingBtn = document.createElement('button');
+                createVotingBtn.className = 'btn';
+                createVotingBtn.textContent = 'Create Voting';
+                createVotingBtn.onclick = () => {
+                    window.location.href = 'create-voting.html';
+                };
+                resultSection.appendChild(createVotingBtn);
+
+            } catch (error) {
+                console.error('Error creating NFT:', error);
+                resultSection.classList.remove('hidden');
+                
+                // Handle specific error cases
+                let errorMessage = 'Transaction failed';
+                if (error.message.includes('Internal JSON-RPC error')) {
+                    errorMessage = 'Network error. Please check your connection and try again.';
+                } else if (error.message.includes('insufficient funds')) {
+                    errorMessage = 'Insufficient funds for gas. Please add more MATIC to your wallet.';
+                } else if (error.message.includes('user denied')) {
+                    errorMessage = 'Transaction was rejected by user.';
+                } else {
+                    errorMessage = error.message || 'Transaction failed';
+                }
+                
+                statusElement.textContent = 'Error: ' + errorMessage;
+                statusElement.style.color = '#e74c3c';
+            }
+        });
+
+        // Listen for account changes
+        window.ethereum.on('accountsChanged', (newAccounts) => {
+            if (newAccounts.length === 0) {
+                const connectButton = document.getElementById('connect-wallet');
+                connectButton.textContent = 'Connect Wallet';
+                connectButton.style.backgroundColor = '#3498db';
+            } else {
+                handleWalletConnected(newAccounts[0]);
+            }
+        });
+
+        // Listen for chain changes
+        window.ethereum.on('chainChanged', () => {
+            window.location.reload();
+        });
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html> 
