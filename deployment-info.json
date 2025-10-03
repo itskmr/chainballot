@@ -3,14 +3,15 @@
   "chainId": 1313161894,
   "contracts": {
     "VotingPowerNFT": {
-      "address": "0x0000000000000000000000000000000000000000",
-      "deployed": false
+      "address": "0xb22d24BE5d608e5BD33d2b5D936A80b74d445CCd",
+      "deployed": true
     },
     "ChainBallot": {
-      "address": "0x0000000000000000000000000000000000000000",
-      "deployed": false
+      "address": "0x9a836494aCB32fb1721eCbe976C13291dd91597f",
+      "deployed": true
     }
   },
-  "lastDeployment": null,
-  "note": "Update contract addresses after deployment using: npx hardhat run scripts/deploy.js --network gai"
+  "lastDeployment": "2025-10-03T19:08:52.983Z",
+  "deployer": "0x8ca07709e535fcf48691A95c008586F59De52097",
+  "note": "Contracts successfully deployed to GAI Network"
 }

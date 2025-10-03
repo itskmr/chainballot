@@ -14,15 +14,17 @@ const VotingABI = [
     {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}], "name": "getCandidates", "outputs": [{"internalType": "string[]", "name": "", "type": "string[]"}], "stateMutability": "view", "type": "function"},
     {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}, {"internalType": "address", "name": "user", "type": "address"}], "name": "hasVoterVoted", "outputs": [{"internalType": "bool", "name": "", "type": "bool"}], "stateMutability": "view", "type": "function"}
 ];
-const NFTFactoryABI = [
-    {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}], "name": "getUsersWithNFTs", "outputs": [{"internalType": "address[]", "name": "", "type": "address[]"}], "stateMutability": "view", "type": "function"},
-    {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}], "name": "getContractOwner", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"},
-    {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}], "name": "identifierToOwner", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"}
+// VotingPowerNFT ABI for checking NFT ownership
+const VotingPowerNFTABI = [
+    {"inputs": [], "name": "getUsersWithNFTs", "outputs": [{"internalType": "address[]", "name": "", "type": "address[]"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [{"internalType": "address", "name": "addr", "type": "address"}], "name": "hasReceived", "outputs": [{"internalType": "bool", "name": "", "type": "bool"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [{"internalType": "uint256", "name": "tokenId", "type": "uint256"}], "name": "ownerOf", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [{"internalType": "address", "name": "owner", "type": "address"}], "name": "balanceOf", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}
 ];
-const VotingAddress = "0xcd7d674128e9218bd0eafc76060189ea0caf8ff0";
-const NFTFactoryAddress = "0x74c06b5f6f1685dc0f6c02886f2b70c88736b0d9";
+const VotingAddress = "0x9a836494aCB32fb1721eCbe976C13291dd91597f"; // ChainBallot contract
+const VotingPowerNFTAddress = "0xb22d24BE5d608e5BD33d2b5D936A80b74d445CCd"; // VotingPowerNFT contract
 
-let web3, votingContract, nftFactoryContract;
+let web3, votingContract, votingPowerNFTContract;
 
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -40,9 +42,9 @@ async function promptForIdentifier() {
 }
 
 async function init() {
-    web3 = new Web3(new Web3.providers.HttpProvider('https://polygon-rpc.com'));
+    web3 = new Web3(new Web3.providers.HttpProvider('https://0x4e4542a6.rpc.aurora-cloud.dev'));
     votingContract = new web3.eth.Contract(VotingABI, VotingAddress);
-    nftFactoryContract = new web3.eth.Contract(NFTFactoryABI, NFTFactoryAddress);
+    votingPowerNFTContract = new web3.eth.Contract(VotingPowerNFTABI, VotingPowerNFTAddress);
 
     let identifier = getQueryParam('id');
     if (!identifier) {
@@ -121,7 +123,7 @@ async function loadResult(identifier) {
             }
             start = await votingContract.methods.getStartDate(identifier).call();
             end = await votingContract.methods.getEndDate(identifier).call();
-            creatorAddr = await nftFactoryContract.methods.identifierToOwner(identifier).call();
+            creatorAddr = await votingContract.methods.getContractOwner().call();
         } catch (e) {
             document.getElementById('voting-details').innerHTML = '<div class="error-message">Could not fetch voting details.</div>';
         }
@@ -140,7 +142,7 @@ async function loadResult(identifier) {
         // 6. NFT Owners & Voting Status
         let owners = [];
         try {
-            owners = await nftFactoryContract.methods.getUsersWithNFTs(identifier).call();
+            owners = await votingPowerNFTContract.methods.getUsersWithNFTs().call();
         } catch (e) {
             owners = [];
         }

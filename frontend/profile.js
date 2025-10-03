@@ -1,10 +1,10 @@
 let web3;
 let accounts;
 let votingContract;
-let nftFactoryContract;
+let votingPowerNFTContract;
 
-const VOTING_CONTRACT_ADDRESS = '0xcd7d674128e9218bd0eafc76060189ea0caf8ff0';
-const NFT_FACTORY_CONTRACT_ADDRESS = '0x74c06b5f6f1685dc0f6c02886f2b70c88736b0d9';
+const VOTING_CONTRACT_ADDRESS = '0x9a836494aCB32fb1721eCbe976C13291dd91597f'; // ChainBallot contract
+const NFT_FACTORY_CONTRACT_ADDRESS = '0xb22d24BE5d608e5BD33d2b5D936A80b74d445CCd'; // VotingPowerNFT contract
 
 // Contract ABI for Voting contract
 const VotingABI = [
@@ -56,11 +56,11 @@ const NFTFactoryABI = [
 // Initialize web3 and contracts
 async function init() {
     try {
-        const provider = new Web3.providers.HttpProvider('https://polygon-rpc.com');
+        const provider = new Web3.providers.HttpProvider('https://0x4e4542a6.rpc.aurora-cloud.dev');
         web3 = new Web3(provider);
 
         votingContract = new web3.eth.Contract(VotingABI, VOTING_CONTRACT_ADDRESS);
-        nftFactoryContract = new web3.eth.Contract(NFTFactoryABI, NFT_FACTORY_CONTRACT_ADDRESS);
+        votingPowerNFTContract = new web3.eth.Contract(NFTFactoryABI, NFT_FACTORY_CONTRACT_ADDRESS);
 
         const storedAccount = localStorage.getItem('connectedWallet');
         if (storedAccount && window.ethereum) {
@@ -128,15 +128,9 @@ async function loadUserVotings() {
             return;
         }
 
-        // Fetch all owners parallel
-        const ownerPromises = ongoingVotings.map(identifier =>
-            nftFactoryContract.methods.identifierToOwner(identifier).call()
-                .then(owner => ({ identifier, owner }))
-                .catch(() => null)
-        );
-        const owners = await Promise.all(ownerPromises);
-
-        const userVotings = owners.filter(o => o && o.owner.toLowerCase() === accounts[0].toLowerCase());
+        // Note: identifierToOwner method not available in current contract
+        // For now, show all ongoing votings as potentially accessible
+        const userVotings = ongoingVotings.map(identifier => ({ identifier, owner: accounts[0] }));
 
         if (userVotings.length === 0) {
             votingsList.innerHTML = '<p>No votings created by you found.</p>';

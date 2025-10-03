@@ -17,19 +17,18 @@ const VotingABI = [
         {"internalType": "string", "name": "candidate", "type": "string"}
     ], "name": "vote", "outputs": [], "stateMutability": "nonpayable", "type": "function"}
 ];
-const NFTFactoryABI = [
-    {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}], "name": "getUsersWithNFTs", "outputs": [{"internalType": "address[]", "name": "", "type": "address[]"}], "stateMutability": "view", "type": "function"},
-    {"inputs": [
-        {"internalType": "string", "name": "identifier", "type": "string"},
-        {"internalType": "address", "name": "user", "type": "address"}
-    ], "name": "hasReceived", "outputs": [{"internalType": "bool", "name": "", "type": "bool"}], "stateMutability": "view", "type": "function"},
-    {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}], "name": "identifierToOwner", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"},
-    {"inputs": [{"internalType": "string", "name": "identifier", "type": "string"}], "name": "registerUser", "outputs": [], "stateMutability": "nonpayable", "type": "function"}
+// VotingPowerNFT ABI for checking NFT ownership
+const VotingPowerNFTABI = [
+    {"inputs": [], "name": "getUsersWithNFTs", "outputs": [{"internalType": "address[]", "name": "", "type": "address[]"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [{"internalType": "address", "name": "addr", "type": "address"}], "name": "hasReceived", "outputs": [{"internalType": "bool", "name": "", "type": "bool"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [{"internalType": "uint256", "name": "tokenId", "type": "uint256"}], "name": "ownerOf", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [{"internalType": "address", "name": "owner", "type": "address"}], "name": "balanceOf", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}
 ];
-const VotingAddress = "0xcd7d674128e9218bd0eafc76060189ea0caf8ff0";
-const NFTFactoryAddress = "0x74c06b5f6f1685dc0f6c02886f2b70c88736b0d9";
 
-let web3, votingContract, nftFactoryContract, userAccount;
+const VotingAddress = "0x9a836494aCB32fb1721eCbe976C13291dd91597f"; // ChainBallot contract
+const VotingPowerNFTAddress = "0xb22d24BE5d608e5BD33d2b5D936A80b74d445CCd"; // VotingPowerNFT contract
+
+let web3, votingContract, votingPowerNFTContract, userAccount;
 
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -37,19 +36,19 @@ function getQueryParam(param) {
 }
 
 function getReadOnlyWeb3() {
-    // Always return a web3 instance using public RPC for read-only
-    return new Web3('https://polygon-rpc.com');
+    // Always return a web3 instance using GAI network RPC for read-only
+    return new Web3('https://0x4e4542a6.rpc.aurora-cloud.dev');
 }
 
 async function init() {
-    // Use MetaMask provider if available, otherwise fallback to public Polygon RPC
+    // Use MetaMask provider if available, otherwise fallback to GAI network RPC
     if (window.ethereum) {
         web3 = new Web3(window.ethereum);
     } else {
         web3 = getReadOnlyWeb3();
     }
     votingContract = new web3.eth.Contract(VotingABI, VotingAddress);
-    nftFactoryContract = new web3.eth.Contract(NFTFactoryABI, NFTFactoryAddress);
+    votingPowerNFTContract = new web3.eth.Contract(VotingPowerNFTABI, VotingPowerNFTAddress);
 
     let identifier = getQueryParam('id');
     if (!identifier) {
@@ -86,7 +85,7 @@ async function renderVotingDetails(identifier) {
     // Always use read-only web3 for details
     const readWeb3 = getReadOnlyWeb3();
     const votingRead = new readWeb3.eth.Contract(VotingABI, VotingAddress);
-    const nftRead = new readWeb3.eth.Contract(NFTFactoryABI, NFTFactoryAddress);
+    const nftRead = new readWeb3.eth.Contract(VotingPowerNFTABI, VotingPowerNFTAddress);
     try {
         let title = '', description = '', nftContract = '', start = '', end = '', creatorAddr = '';
         const details = await votingRead.methods.getVotingDetails(identifier).call();
@@ -99,13 +98,12 @@ async function renderVotingDetails(identifier) {
         }
         start = await votingRead.methods.getStartDate(identifier).call();
         end = await votingRead.methods.getEndDate(identifier).call();
-        creatorAddr = await nftRead.methods.identifierToOwner(identifier).call();
+        // Creator information not available in current contract design
         const startTime = start ? new Date(Number(start) * 1000).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '';
         const endTime = end ? new Date(Number(end) * 1000).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '';
         document.getElementById('voting-details').innerHTML = `
             <p><b>Title:</b> ${title}</p>
             <p><b>Identifier:</b> ${identifier}</p>
-            <p><b>Creator:</b> <span class="contract-address">${creatorAddr}</span></p>
             <p><b>Description:</b> ${description}</p>
             <p><b>NFT Contract:</b> <span class="contract-address">${nftContract}</span></p>
             <p><b>Start Time:</b> ${startTime} (IST)</p>
@@ -120,7 +118,7 @@ async function renderCandidatesVoting(identifier, hasWallet) {
     // Always use read-only web3 for candidate data
     const readWeb3 = getReadOnlyWeb3();
     const votingRead = new readWeb3.eth.Contract(VotingABI, VotingAddress);
-    const nftRead = new readWeb3.eth.Contract(NFTFactoryABI, NFTFactoryAddress);
+    const nftRead = new readWeb3.eth.Contract(VotingPowerNFTABI, VotingPowerNFTAddress);
     const candidatesList = document.getElementById('candidates-list');
     const voteActions = document.getElementById('vote-actions');
     const voteStatus = document.getElementById('vote-status');
@@ -158,7 +156,7 @@ async function renderCandidatesVoting(identifier, hasWallet) {
                 hasVoted = await votingContract.methods.hasVoterVoted(identifier, currentAccount).call();
             } catch (e) {}
             try {
-                hasNFT = await nftFactoryContract.methods.hasReceived(identifier, currentAccount).call();
+                hasNFT = await votingPowerNFTContract.methods.hasReceived(currentAccount).call();
             } catch (e) {}
         }
     }
@@ -247,18 +245,18 @@ async function renderCandidatesVoting(identifier, hasWallet) {
                     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                     const account = accounts[0];
                     userAccount = account;
-                    // Ensure correct network (Polygon Mainnet, chainId: 137)
+                    // Ensure correct network (GAI Network, chainId: 1313161894)
                     const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-                    if (chainId !== '0x89') {
-                        voteStatus.innerHTML = '<span style="color:#e74c3c;">Please switch to the Polygon network in MetaMask.</span>';
+                    if (chainId !== '0x4E4542A6') {
+                        voteStatus.innerHTML = '<span style="color:#e74c3c;">Please switch to the GAI network in MetaMask.</span>';
                         return;
                     }
                     // Get current gas price
                     const gasPrice = await web3.eth.getGasPrice();
-                    // Send transaction to registerUser (only identifier)
-                    await nftFactoryContract.methods.registerUser(identifier).send({
+                    // Send transaction to mint NFT (no identifier needed for VotingPowerNFT)
+                    await votingPowerNFTContract.methods.mintNFT(account).send({
                         from: account,
-                        gas: 300000,
+                        gas: 200000,
                         gasPrice: gasPrice
                     });
                     voteStatus.innerHTML = '<span style="color:#27ae60;font-weight:bold;">Access requested! Please wait for approval and try again after some time.</span>';
@@ -286,11 +284,11 @@ async function renderCandidatesVoting(identifier, hasWallet) {
 async function renderNFTOwners(identifier) {
     // Always use read-only web3 for NFT owners
     const readWeb3 = getReadOnlyWeb3();
-    const nftRead = new readWeb3.eth.Contract(NFTFactoryABI, NFTFactoryAddress);
+    const nftRead = new readWeb3.eth.Contract(VotingPowerNFTABI, VotingPowerNFTAddress);
     const votingRead = new readWeb3.eth.Contract(VotingABI, VotingAddress);
     let owners = [];
     try {
-        owners = await nftRead.methods.getUsersWithNFTs(identifier).call();
+        owners = await nftRead.methods.getUsersWithNFTs().call();
     } catch (e) { owners = []; }
     const ownersList = document.getElementById('nft-owners-list');
     ownersList.innerHTML = '';

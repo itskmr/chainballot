@@ -1,5 +1,18 @@
-// Contract ABI for Voting contract
+// Contract ABI for ChainBallot contract
 const VotingABI = [
+  {
+    inputs: [],
+    name: "votingCounter",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
   {
     inputs: [],
     name: "getOngoingVotings",
@@ -80,6 +93,97 @@ const VotingABI = [
     stateMutability: "view",
     type: "function",
   },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "identifier",
+        type: "string",
+      },
+    ],
+    name: "getCandidates",
+    outputs: [
+      {
+        internalType: "string[]",
+        name: "",
+        type: "string[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "identifier",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "candidate",
+        type: "string",
+      },
+    ],
+    name: "getVotes",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "identifier",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+    ],
+    name: "hasVoterVoted",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "identifier",
+        type: "string",
+      },
+    ],
+    name: "getVotingData",
+    outputs: [
+      {
+        internalType: "string[]",
+        name: "candidates",
+        type: "string[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "votesCount",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ];
 
 // GAI Network Configuration
@@ -95,10 +199,10 @@ const GAI_NETWORK = {
   blockExplorerUrls: ['https://0x4e4542a6.explorer.aurora-cloud.dev'],
 };
 
-// Contract addresses on GAI network (to be updated after deployment)
+// Contract addresses on GAI network
 const CONTRACT_ADDRESSES = {
-  voting: "0x0000000000000000000000000000000000000000", // Will be updated after deployment
-  nft: "0x0000000000000000000000000000000000000000"    // Will be updated after deployment
+  voting: "0x9a836494aCB32fb1721eCbe976C13291dd91597f", // ChainBallot contract
+  nft: "0xb22d24BE5d608e5BD33d2b5D936A80b74d445CCd"    // VotingPowerNFT contract
 };
 
 let web3;

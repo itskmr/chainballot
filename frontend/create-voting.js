@@ -135,8 +135,8 @@ const ChainBallotABI = [
     }
 ];
 
-// Contract addresses (will be updated after deployment)
-const ChainBallotAddress = "0x0000000000000000000000000000000000000000";
+// Contract addresses
+const ChainBallotAddress = "0x9a836494aCB32fb1721eCbe976C13291dd91597f";
 
 let web3;
 let accounts;
@@ -216,12 +216,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const identifier = localStorage.getItem('votingIdentifier');
-            const nftContractAddress = localStorage.getItem('nftContractAddress');
-            
+            // Get values from form (set by HTML script) or localStorage
+            const identifier = document.getElementById('identifier').value || localStorage.getItem('votingIdentifier');
+            const nftContractAddress = document.getElementById('nft-contract-address').value || localStorage.getItem('nftContractAddress');
+
             if (!identifier || !nftContractAddress) {
-                alert('Please create an NFT first');
-                window.location.href = 'create-nft.html';
+                alert('Please ensure NFT contract address is set');
                 return;
             }
 
@@ -259,6 +259,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const gasPrice = await web3.eth.getGasPrice();
 
                 // Call createVoting function
+                console.log('Creating voting with params:', {
+                    identifier,
+                    title,
+                    description,
+                    startTime,
+                    endTime,
+                    nftContractAddress,
+                    candidates: candidates.length
+                });
+
                 const result = await chainBallotContract.methods
                     .createVoting(
                         identifier,
@@ -269,9 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         nftContractAddress,
                         candidates
                     )
-                    .send({ 
+                    .send({
                         from: accounts[0],
-                        gas: 5000000, // 5 million gas limit
+                        gas: 2000000, // Further increased gas limit for voting creation
                         gasPrice: gasPrice // Use current market gas price
                     });
 

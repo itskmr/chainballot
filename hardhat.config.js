@@ -33,7 +33,7 @@ module.exports = {
   },
 
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: process.env.ETHERSCAN_API_KEY || "dummy_key_for_gai_network",
     customChains: [
       {
         network: "gai",
@@ -44,6 +44,10 @@ module.exports = {
         }
       }
     ]
+  },
+
+  sourcify: {
+    enabled: true
   },
 
   paths: {
