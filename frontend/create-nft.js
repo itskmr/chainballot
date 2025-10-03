@@ -506,8 +506,8 @@ const VotingPowerNFTABI = [
     }
 ];
 
-// VotingPowerNFT Contract Address (will be updated after deployment)
-const VotingPowerNFTAddress = "0x0000000000000000000000000000000000000000";
+// VotingPowerNFT Contract Address
+const VotingPowerNFTAddress = "0xb22d24BE5d608e5BD33d2b5D936A80b74d445CCd";
 
 // Global variables for web3 and contract
 let web3;

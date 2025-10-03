@@ -135,8 +135,8 @@ const ChainBallotABI = [
     }
 ];
 
-// Contract addresses (will be updated after deployment)
-const ChainBallotAddress = "0x0000000000000000000000000000000000000000";
+// Contract addresses
+const ChainBallotAddress = "0x9a836494aCB32fb1721eCbe976C13291dd91597f";
 
 let web3;
 let accounts;
@@ -216,12 +216,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const identifier = localStorage.getItem('votingIdentifier');
-            const nftContractAddress = localStorage.getItem('nftContractAddress');
-            
+            // Get values from form (set by HTML script) or localStorage
+            const identifier = document.getElementById('identifier').value || localStorage.getItem('votingIdentifier');
+            const nftContractAddress = document.getElementById('nft-contract-address').value || localStorage.getItem('nftContractAddress');
+
             if (!identifier || !nftContractAddress) {
-                alert('Please create an NFT first');
-                window.location.href = 'create-nft.html';
+                alert('Please ensure NFT contract address is set');
                 return;
             }
 

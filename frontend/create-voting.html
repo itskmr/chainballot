@@ -126,19 +126,23 @@
     <script src="https://cdn.jsdelivr.net/npm/web3@1.9.0/dist/web3.min.js"></script>
     <script src="create-voting.js"></script>
     <script>
-        // Set the identifier and NFT contract address from localStorage
+        // Set the identifier and NFT contract address from localStorage or use deployed contracts
         document.addEventListener('DOMContentLoaded', () => {
             const identifier = localStorage.getItem('votingIdentifier');
             const nftContractAddress = localStorage.getItem('nftContractAddress');
-            
-            if (!identifier || !nftContractAddress) {
-                alert('Please create an NFT first');
-                window.location.href = 'create-nft.html';
-                return;
+
+            // Use localStorage values if available, otherwise use deployed contract addresses
+            const deployedNftAddress = "0xb22d24BE5d608e5BD33d2b5D936A80b74d445CCd"; // Deployed VotingPowerNFT
+
+            if (identifier && nftContractAddress) {
+                // Use values from localStorage (NFT creation flow)
+                document.getElementById('identifier').value = identifier;
+                document.getElementById('nft-contract-address').value = nftContractAddress;
+            } else {
+                // Use deployed contract addresses (direct deployment flow)
+                document.getElementById('identifier').value = 'main-voting'; // Default identifier
+                document.getElementById('nft-contract-address').value = deployedNftAddress;
             }
-            
-            document.getElementById('identifier').value = identifier;
-            document.getElementById('nft-contract-address').value = nftContractAddress;
         });
     </script>
 </body>
