@@ -1,13 +1,277 @@
-# ChainBallot - Decentralized Voting Platform on GAI Network
+# 🚀 ChainBallot - Decentralized Voting Platform
 
-ChainBallot is a decentralized voting platform that leverages the **Gyansetu AI (GAI) Network** for secure, transparent, and tamper-proof elections. Built with modern blockchain technology, it ensures voter eligibility through NFT-based verification while maintaining complete privacy and preventing double voting.
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fchainballot)
 
-## 🌟 Key Features
+## 📋 Table of Contents
+- [🏗️ Architecture Overview](#architecture-overview)
+- [🌐 Live Demo](#live-demo)
+- [🚀 Quick Deploy to Vercel](#quick-deploy-to-vercel)
+- [📦 Manual Deployment](#manual-deployment)
+- [⚙️ Prerequisites](#prerequisites)
+- [🔧 Smart Contracts](#smart-contracts)
+- [💻 Frontend Stack](#frontend-stack)
+- [🌍 Blockchain Integration](#blockchain-integration)
+- [🔐 Wallet Setup](#wallet-setup)
+- [🧪 Testing](#testing)
+- [📚 API Reference](#api-reference)
+- [🔧 Troubleshooting](#troubleshooting)
 
-- **NFT-Based Voter Verification**: Only NFT holders can participate in voting
-- **GAI Network Integration**: Built on the Gyansetu AI blockchain for enhanced security
-- **Real-time Vote Tallying**: Immediate results with cryptographic privacy protection
-- **MetaMask Wallet Integration**: Seamless wallet connection for GAI network
+## 🏗️ Architecture Overview
+
+**ChainBallot** is a decentralized voting platform built on blockchain technology that combines:
+
+### 🏛️ Smart Contracts (Backend)
+- **ChainBallot.sol**: Main voting contract managing elections, candidates, and votes
+- **VotingPowerNFT.sol**: ERC721 NFT contract for voting eligibility
+
+### 💻 Frontend (Web Interface)
+- **Static HTML/CSS/JavaScript** - No build process required
+- **Web3.js** for blockchain interaction
+- **MetaMask** wallet integration
+- **Responsive design** with modern UI
+
+### ⛓️ Blockchain Network
+- **GAI Network** (Chain ID: 1313161894)
+- **RPC**: `https://0x4e4542a6.rpc.aurora-cloud.dev`
+- **Explorer**: `https://0x4e4542a6.explorer.aurora-cloud.dev`
+
+## 🌐 Live Demo
+
+Your deployed application will be accessible at: `https://your-project-name.vercel.app`
+
+## 🚀 Quick Deploy to Vercel
+
+### Option 1: One-Click Deploy
+1. Click the **"Deploy to Vercel"** button above
+2. Connect your GitHub repository
+3. Vercel will automatically deploy your app
+4. Your app will be live instantly!
+
+### Option 2: Manual Deploy (Recommended)
+```bash
+# 1. Install Vercel CLI
+npm i -g vercel
+
+# 2. Login to Vercel
+vercel login
+
+# 3. Deploy from the frontend directory
+cd frontend
+vercel --prod
+
+# 4. Follow the prompts and your app will be deployed!
+```
+
+## 📦 Manual Deployment
+
+### Step 1: Environment Setup
+```bash
+# Clone and navigate to project
+git clone <your-repo-url>
+cd chainballot
+
+# Install dependencies
+yarn install
+
+# Deploy smart contracts (if not already deployed)
+yarn deploy
+```
+
+### Step 2: Update Contract Addresses
+If you redeploy contracts, update the addresses in the frontend:
+```bash
+# Update contract addresses in frontend files
+node scripts/update-addresses.js <NFT_ADDRESS> <VOTING_ADDRESS>
+```
+
+### Step 3: Deploy to Vercel
+```bash
+# Deploy to Vercel
+./scripts/deploy-to-vercel.sh
+```
+
+## ⚙️ Prerequisites
+
+### Required Software
+- **Node.js** (v16 or higher)
+- **Yarn** package manager
+- **MetaMask** browser extension
+- **Vercel CLI** (`npm i -g vercel`)
+
+### Blockchain Wallet Setup
+1. Install **MetaMask** browser extension
+2. Add **GAI Network** to MetaMask:
+   - Network Name: `Gyansetu AI`
+   - RPC URL: `https://0x4e4542a6.rpc.aurora-cloud.dev`
+   - Chain ID: `1313161894`
+   - Currency Symbol: `GAI`
+   - Block Explorer: `https://0x4e4542a6.explorer.aurora-cloud.dev`
+
+## 🔧 Smart Contracts
+
+### ChainBallot Contract (`0x9a836494aCB32fb1721eCbe976C13291dd91597f`)
+**Features:**
+- ✅ Create voting sessions with multiple candidates
+- ✅ Time-locked voting periods
+- ✅ NFT-based voting eligibility
+- ✅ Real-time vote counting
+- ✅ Vote integrity (one vote per NFT holder)
+
+### VotingPowerNFT Contract (`0xb22d24BE5d608e5BD33d2b5D936A80b74d445CCd`)
+**Features:**
+- ✅ ERC721 compliant NFT minting
+- ✅ Batch minting capabilities
+- ✅ Voting power verification
+- ✅ Ownership tracking
+
+## 💻 Frontend Stack
+
+### Technology Stack
+- **HTML5** - Semantic structure
+- **CSS3** - Modern styling with Flexbox/Grid
+- **Vanilla JavaScript** - No frameworks, pure JS
+- **Web3.js** - Blockchain interaction
+- **Font Awesome** - Icons and UI elements
+
+### Key Features
+- **Responsive Design** - Works on all devices
+- **Real-time Updates** - Live voting data
+- **Wallet Integration** - MetaMask connectivity
+- **Network Switching** - Auto-detects and prompts for GAI Network
+- **Error Handling** - Comprehensive error messages and recovery
+
+## 🌍 Blockchain Integration
+
+### Network Configuration
+```javascript
+const GAI_NETWORK = {
+  chainId: '0x4E4542A6',
+  chainName: 'Gyansetu AI',
+  nativeCurrency: {
+    name: 'Gyansetu AI',
+    symbol: 'GAI',
+    decimals: 18,
+  },
+  rpcUrls: ['https://0x4e4542a6.rpc.aurora-cloud.dev'],
+  blockExplorerUrls: ['https://0x4e4542a6.explorer.aurora-cloud.dev'],
+};
+```
+
+### Contract Interaction
+- **Read Operations**: Use public RPC for viewing data
+- **Write Operations**: Require MetaMask connection and transaction signing
+- **Gas Optimization**: Contracts use optimized Solidity code
+
+## 🔐 Wallet Setup
+
+### For Users
+1. Install MetaMask browser extension
+2. Create or import a wallet
+3. Add GAI Network (see Prerequisites)
+4. Connect to the application via "Connect Wallet" button
+
+### For Administrators
+1. Deploy contracts using Hardhat
+2. Mint NFTs for voters using `mintNFT()` or `batchMintNFTs()`
+3. Create voting sessions with initial candidates
+
+## 🧪 Testing
+
+### Smart Contract Tests
+```bash
+# Compile contracts
+yarn compile
+
+# Run tests
+yarn test
+
+# Deploy to local network for testing
+yarn deploy:local
+```
+
+### Frontend Testing
+1. Open the application in browser
+2. Connect MetaMask wallet
+3. Ensure you're on GAI Network
+4. Test voting functionality with deployed contracts
+
+## 📚 API Reference
+
+### Contract Methods
+
+#### ChainBallot Contract
+- `createVoting(identifier, title, description, startTime, endTime, nftContract, candidates[])`
+- `vote(identifier, candidate)`
+- `addCandidate(identifier, candidate)`
+- `getVotingData(identifier)` → `candidates[], votesCount[]`
+- `getOngoingVotings()` → `string[]`
+
+#### VotingPowerNFT Contract
+- `mintNFT(recipient)`
+- `batchMintNFTs(recipients[])`
+- `balanceOf(owner)` → `uint256`
+- `hasReceived(address)` → `bool`
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**❌ "Smart Contracts Not Yet Deployed"**
+```bash
+# Deploy contracts first
+yarn deploy
+
+# Update frontend with new addresses
+node scripts/update-addresses.js <NFT_ADDRESS> <VOTING_ADDRESS>
+```
+
+**❌ MetaMask Network Issues**
+1. Ensure GAI Network is added to MetaMask
+2. Check RPC URL is accessible
+3. Verify Chain ID is correct (1313161894)
+
+**❌ Transaction Failures**
+1. Check gas price and limits
+2. Ensure sufficient GAI tokens for gas
+3. Verify contract addresses are correct
+
+**❌ Vercel Deployment Issues**
+```bash
+# Check deployment logs
+vercel logs --follow
+
+# Redeploy if needed
+vercel --prod
+```
+
+### Getting Help
+
+1. **Check the logs**: `vercel logs --follow`
+2. **Verify contract deployment**: Check deployment-info.json
+3. **Test locally**: `yarn start` then open http://localhost:3000
+4. **Check network**: Ensure you're on GAI Network in MetaMask
+
+## 📄 License
+
+MIT License - see LICENSE file for details
+
+## 👥 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📞 Support
+
+For support and questions:
+- Email: roizlive69@gmail.com
+- GitHub Issues: [Create an issue](https://github.com/yourusername/chainballot/issues)
+
+---
+
+**Made with ❤️ for decentralized democracy**
 - **User-Friendly Interface**: Modern web interface accessible to all users
 - **Immutable Records**: Tamper-proof voting records on the blockchain
 - **Smart Contract Automation**: Automated voting processes with Solidity contracts

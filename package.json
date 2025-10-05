@@ -14,7 +14,9 @@
     "console": "npx hardhat console --network gai",
     "verify": "npx hardhat verify",
     "start": "cd frontend && python3 -m http.server 3000",
-    "serve": "cd frontend && python3 -m http.server 3000"
+    "serve": "cd frontend && python3 -m http.server 3000",
+    "build": "echo 'No build step required for static frontend'",
+    "vercel-deploy": "cd frontend && vercel --prod"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.9.0"
